@@ -1,0 +1,24 @@
+# Move Build Output
+build/
+
+# Move coverage and tracing information
+.trace
+*.mvcov
+
+# macOS
+.DS_Store
+
+# keypair
+keypair*
+
+# draw.io
+*.drawio.bkp*
+
+# sui key
+*.key
+
+# sui log
+sui.log.*
+
+# lock files
+*.lock
