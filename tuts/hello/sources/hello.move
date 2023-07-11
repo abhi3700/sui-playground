@@ -10,7 +10,7 @@
 //! - Tool: https://www.browserling.com/tools/utf8-encode
 //! Also., check in your CLI:
 //! ```console
-//! ❯ echo -e "\x48\x65\x6c\x6c\x6f\x20\x77\x6f\x72\x6c\x64"
+//! echo -e "\x48\x65\x6c\x6c\x6f\x20\x77\x6f\x72\x6c\x64"
 //!  Hello world
 //! ```
 //! - Code reference: https://examples.sui.io/basics/strings.html
@@ -28,6 +28,7 @@ module hello::hello {
     use std::string::{Self, String};
     use sui::clock::{Self, Clock};
     use sui::event;
+    
     // use std::vector;
 
     /// Hello, World!
@@ -47,10 +48,11 @@ module hello::hello {
         o: Hello,
     }
 
-    /// Error: Non-empty message
+    // Error codes
+    /// Empty message
     const EEmptyMessage: u64 = 1;
 
-    /// Error: Zero address
+    /// Zero address
     const EZeroAddress: u64 = 2;
 
     /// Event for Hello

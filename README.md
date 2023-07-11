@@ -12,6 +12,14 @@ Learn everything Sui Blockchain and the way Move language is used in it.
 
 - **Sui** is a blockchain network which uses Move language.
 - Foundation name: **Mysten Labs**
+
+```mermaid
+graph TB
+
+A[Sui Move] --created by--> B[Mysten Labs]
+A --security focused by--> C[MoveBit]
+```
+
 - Sui was founded by Mysten Labs. Its five co-founders, as well as several Mysten employees, worked on developing the Diem blockchain and Move programming language. Four of the five co-founders worked at Facebook but [left](https://blockworks.co/four-former-facebook-developers-launch-web3-startup/) due to the strict regulatory restrictions in place and decided to work on their own blockchain.
 - There has been some confusion that Mysten Labs is affiliated with Aptos, another Move-based blockchain, but the team has clarified that there is no relationship between the two projects except the fact that both teams have had prior experience at Facebook’s blockchain developments.
 - Eventual consistency is the consensus model employed by Sui; if one honest validator certifies the transaction, all of the other honest validators will too eventually.
@@ -25,6 +33,8 @@ Learn everything Sui Blockchain and the way Move language is used in it.
 - **Cons**: Building an efficient synchronizer is harder in Sui than in traditional blockchains. The synchronizer sub-protocol allows validators to update each other by sharing data, and it allows slow validators to catch up. Building an efficient synchronizer for traditional blockchains is no easy task, but still simpler than in Sui.
 
 ## Installation
+
+### Sui CLI
 
 1. Install [prerequisites](https://docs.sui.io/build/install#prerequisites) for your operating system (macOS).
 2. [Install Sui binaries](https://docs.sui.io/build/install#install-sui-binaries).
@@ -70,10 +80,34 @@ Learn everything Sui Blockchain and the way Move language is used in it.
    rustup update stable
    ```
 
-3. Configure an Integrated Development Environment (IDE).
-   - Editor: VSCode
-   - Language server/analyzer:
-4. Request SUI test tokens to use on Sui Devnet or Sui Testnet networks.
+3. Request SUI test tokens to use on Sui Devnet or Sui Testnet networks.
+
+   ```sh
+   ❯ curl --location --request POST 'https://faucet.devnet.sui.io/gas' \
+   --header 'Content-Type: application/json' \
+   --data-raw '{
+       "FixedAmountRequest": {
+           "recipient": "0x7e86320466e04f808a5e046a65d1458b3a28def339ea9986e5874496ef66bd08"
+       }
+   }'
+   ```
+
+   > Just change the address: `0x...` to your address.
+
+### [Language server](../README.md#language-server)
+
+### Editor
+
+VSCode extensions (updated frequently):
+
+#### [Move syntax highlighter](../README.md#move-syntax-highlighter)
+
+#### Sui Move-analyzer
+
+- [sui-move-analyzer](https://marketplace.visualstudio.com/items?itemName=MoveBit.sui-move-analyzer)
+  > Dependent on [move-analyzer](https://marketplace.visualstudio.com/items?itemName=move.move-analyzer)
+
+> NOTE: Keep [this](../README.md#note) in mind.
 
 ## Getting Started
 
