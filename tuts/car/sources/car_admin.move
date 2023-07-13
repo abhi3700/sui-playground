@@ -20,6 +20,7 @@ module car::car_admin {
         id: UID
     }
 
+    #[allow(unused_function)]
     fun init(ctx: &mut TxContext) {
         // during the conntract deployment, the admin is transferred with the AdminCapability object.
         transfer::transfer(AdminCapability {

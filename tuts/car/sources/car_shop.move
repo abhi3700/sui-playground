@@ -1,10 +1,11 @@
 module car::car_shop {
-    use sui::tx_context::{Self, TxContext};
-    use sui::transfer::{Self, share_object};
-    use sui::object::{Self, UID};
-    use sui::coin::{Self, Coin};
-    use sui::balance::{Self, Balance};
+
+    use sui::transfer;
     use sui::sui::SUI;
+    use sui::coin::{Self, Coin};
+    use sui::object::{Self, UID};
+    use sui::balance::{Self, Balance};
+    use sui::tx_context::{Self, TxContext};
 
     // Error codes
     /// Insufficient balance
@@ -35,6 +36,7 @@ module car::car_shop {
         id: UID,
     }
 
+    #[allow(unused_function)]
     fun init(ctx: &mut TxContext) {
         // set the owner of the shop, so, transfer the object to the caller.
         transfer::transfer(ShopOwnerCap {id: object::new(ctx)}, tx_context::sender(ctx));
@@ -92,10 +94,12 @@ module car::car_shop {
         let earnings = coin::take(&mut shop.balance, amount, ctx);
 
         // reset the balance of the shop
-        shop.balance = balance::zero();
+        // shop.balance = balance::zero();  // TODO: during tests, check if the balance is reset or not in the shop object.
 
         // transfer the earning to the owner
-        transfer::transfer(earnings, tx_context::sender(ctx));
+        transfer::public_transfer(earnings, tx_context::sender(ctx));
     }
 
-}
+} 
+
+

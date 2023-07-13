@@ -18,3 +18,8 @@
 
 1. 👨🏻‍✈️ [ShopOwner] --shop owner set a price--> 🏬
 2. 🧍 [Buyer] --buy a car--> 🏬 [CarShop] --creates a car 🚘 & transfer to the buyer--> 🧍 [Buyer]
+
+## Resources
+
+- [Code](https://github.com/sui-foundation/encode-sui-educate/tree/main/lesson-2)
+  > Doesn't have unit tests
