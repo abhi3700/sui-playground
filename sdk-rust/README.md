@@ -13,4 +13,5 @@ Here, we will learn how to use the Rust SDK to interact with the Sui SCs.
 
 ```toml
 [dependencies]
+sui-sdk = { git = "https://github.com/MystenLabs/sui", branch = "devnet" }
 ```
