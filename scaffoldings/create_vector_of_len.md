@@ -1,5 +1,10 @@
-//! Create a zero vector of given length
+---
+title: Zero Vector
+---
 
+Create a zero vector of given length
+
+```rust
 fun zero_vector(length: u64): vector<u8> {
     let vec = vector::empty<u8>();
     let i=0;
@@ -9,3 +14,4 @@ fun zero_vector(length: u64): vector<u8> {
     };
     vec
 }
+```
