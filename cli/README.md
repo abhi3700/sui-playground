@@ -3,7 +3,7 @@
 ## Architecture
 
 ```mermaid
-graph TB
+flowchart TB
 A[CLI] --Sui keystore tool--> B[Keytool]
 A --Start Sui interactive console--> C[REPL Console]
 A --Client for interacting with the Sui network--> D[Client]
@@ -39,7 +39,7 @@ A --A tool for validators and validator candidates--> E[Validator]
   ```
 
   ```mermaid
-  graph LR
+  flowchart LR
   A[secret recovery phrase] --scheme--> B[public key] --base64--> C[address]
   ```
 
@@ -292,7 +292,7 @@ A --A tool for validators and validator candidates--> E[Validator]
 
   </details>
 
-  - Call a module function with arguments
+- Call a module function with arguments
 
   The function looks like this:
 

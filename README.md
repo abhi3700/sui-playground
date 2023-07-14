@@ -14,7 +14,7 @@ Learn everything Sui Blockchain and the way Move language is used in it.
 - Foundation name: **Mysten Labs**
 
 ```mermaid
-graph TB
+flowchart TB
 
 A[Sui Move] --created by--> B[Mysten Labs]
 A --security focused by--> C[MoveBit]
@@ -109,7 +109,49 @@ VSCode extensions (updated frequently):
 
 > NOTE: Keep [this](../README.md#note) in mind.
 
+Watch this [video to see the demo](https://www.youtube.com/watch?v=79L0CrjLBUg).
+
 ## Getting Started
+
+### Write code
+
+Refer [this](./tuts/hello/sources/hello.move)
+
+### Build
+
+```sh
+# Build all module in a package with "Move.toml"
+sui move build
+```
+
+### Test
+
+```sh
+# run all tests in the directory containing `Move.toml`
+sui move test
+# ignore compile warnings & continue to run tests
+sui move test --ignore_compile_warnings
+```
+
+### Coverage
+
+<!-- TODO: -->
+
+### Gas Report
+
+<!-- TODO: -->
+
+### Publish
+
+```console
+$ sui client publish --gas-budget 1000000
+```
+
+### Call Function
+
+```console
+$ sui client call --function <function_name> --module <module_name> --package <package-address> --args <arg1> <arg2>... <argn> --gas-budget 1000000
+```
 
 ## Tutorials
 
@@ -224,6 +266,22 @@ A smart contract is an object (called a Sui Move package), and these smart contr
   - Sui Move Module
     - Sui Move Object
 
+```mermaid
+graph TB
+
+A[Package] --> B[Module-1]
+A[Package] --> C[Module-2]
+A[Package] --> D[Module-3]
+B[Module-1] --> E[Object-1]
+B[Module-1] --> F[Object-2]
+B[Module-1] --> G[Object-3]
+C[Module-2] --> H[Object-4]
+C[Module-2] --> I[Object-5]
+D[Module-3] --> J[Object-6]
+```
+
+Here, `Package` is deployed at an address during `$ sui client publish --gas-budget <amount>`.
+
 #### Module/Package
 
 - A **package** can have multiple modules (in bytecode).
@@ -253,50 +311,113 @@ A smart contract is an object (called a Sui Move package), and these smart contr
 
 #### Object/Storage
 
-In Sui/Aptos move, we have `CTRUD` operation over traditional `CRUD`.
+- In Sui/Aptos move, we have `CTRUD` operation over traditional `CRUD`.
 
-> `T` for `Transfer`.
+  > `T` stands for `Transfer`.
 
-This object are stored in global storage & an address is assigned to.
-
+- Traditionally, the storage is in form of key-value pair, but in Sui/Aptos, we have objects that is stored in global storage and an address (Id) is assigned to it.
+- This object are stored in global storage & an address is assigned to.
+- In Sui, every object must have an owner. The owner can be either an address, another object, or "shared". For more, read [object ownership](https://github.com/MystenLabs/sui/blob/main/doc/src/learn/objects.md#L19)
 - Basic unit: **object**, unlike other blockchains where the storage is key-value based.
 - **Sui Move Object**: typed data governed by a particular **Sui Move module** from a **Sui Move package**.
-- Each **object** value is a struct with fields that can contain _primitive_ types (e.g. integers, addresses), other objects, and non-object structs. Each object value:
+- Each **object** value is a struct with fields that can contain _primitive_ types (e.g. integers, addresses), other objects, and non-object structs. Each object can be:
 
-  - is mutable and owned by an address at the time of its creation,
-  - but can subsequently be frozen and become permanently immutable, or
-  - be shared and thus become accessible by other addresses.
+  - **mutable**:
+    - owned by an address (during creation)
+    - owned by another object
+    - shared publicly, not owned by any address or object
+      > This is like traditional data sitting in the SC
+  - **immutable**
 
-- A Move `struct` has abilities: `key`, `drop`, `store`, `copy`
+- Unlike traditional smart contracts, where there the data sits on the contract itself, in Sui, the object can be taken out of the module during transfer. E.g. `transfer` vs `public_transfer` functions. We don't have to worry about Access Control in Sui unlike other blockchains. If we don't want to give unique ownership, just make the `object` as _shared_. And if we don't want to update the object, make it _immutable_.
+- A Move `struct` has abilities: `key`, `drop`, `store`, `copy`.
 - Objects in core, **Aptos**, and **Sui** Move are used to represent assets like USDT, the administrator permissions to a smart contract, chips in an on-chain poker game, and any other data that the smart contract is tracking.
-- Object `UIDs` are supposed to be globally unique. They are
+- Object `UID` (Unique Identifier) are supposed to be globally unique. They are
   - created through `object::new(&mut TxContext)` and
   - destroyed through `object::delete(UID)`.
 - An object at its core is just a collection of related data represented as a `struct` in **Move**.
 - On Sui, in order for a Move object to be stored on-chain under an account, it must be also be a Sui object. Sui objects have the key ability (since they are stored on-chain) and a special first member of the struct named id with type `UID`. A bytecode verifier ensures that any struct with the key ability has the special first member.
-  Object UIDs are supposed to be globally unique. They are created through object::new(&mut TxContext) and destroyed through object::delete(UID).
-- Abilities:
-
-  - `key` makes an object able to be stored on-chain. If an object does not have key, it has to be stored under another object or destroyed before the contract finishes execution.
-  - `store` allows an object to be stored under another object. Think of structs like boxes, and store allows this particular box to fit inside other boxes.
-    > NOTE: `store` is required for data persistence.
-  - `copy` allows an object to be copied. Non-copyable objects can’t be copied, but manual “copies” can theoretically still be created by the creating contract.
-  - `drop` allows an object to be quietly destroyed. Simply allowing the object to go out of scope will destroy it.
-
-- Objects in Sui can have different ownership types:
-
-  - Exclusively owned by an address.
+- Object can have sub-objects like this:
 
   ```move
-  use sui::transfer;
+  /// A custom sui object. Every object must have the `key` attribute
+  /// (indicating that it is allowed to be a key in the sui global object
+  /// pool), and must have a field `id: UID` corresponding to its sui ObjId.
+  /// Other object attributes present at the protocol level (authenticator,
+  /// sequence number, TxDigest, ...) are intentionally not exposed here.
+  struct Object has key {
+      id: UID,
+      /// Custom objects can have fields of arbitrary type...
+      custom_field: u64,
+      /// ... including other objects
+      child_obj: ChildObject,
+      /// ... and other global objects
+      nested_obj: AnotherObject,
+  }
 
-  transfer::transfer(obj, recipient);
+  /// An object that can be stored inside global objects or other child
+  /// objects, but cannot be placed in the global object pool on its own.
+  /// Note that it doesn't need an ID field.
+  struct ChildObject has store {
+      a_field: bool,
+  }
+
+  /// An object that can live either in the global object pool or as a nested
+  /// object.
+  struct AnotherObject has key, store {
+      id: UID,
+  }
+  ```
+
+  > NOTE: look at the 2 different types of sub-objects - `ChildObject` and `NestedObject` that has no key & has key ability respectively. But, all of them has `store` ability.
+
+- Abilities:
+
+  - `key` makes an object able to be stored on-chain on its own & can be put inside another object as nested object. If an object does not have key, it has to be stored under another object or destroyed before the contract finishes execution.
+  - `store` allows an object to be stored under another object. Think of structs like boxes, and store allows this particular box to fit inside other boxes.
+
+    > NOTE: `store` is required for data persistence across modules. If an object has `store` ability, the ownership can be transferred to another address via shifting from existing module to another module.
+
+    <img src="img/object_vs_struct.png" width="350" height="300">
+
+    In this image 🔝, the 1st one is the object (containing `key` ability) and the 2nd one is considered as the `struct` only (having no `key` ability). Here, the 2nd one doesn't need an UID, as it is a child object (only `key`) of 1st one and doesn't need to be nested object (`key` + `store`).
+
+  - `copy` allows an object to be copied. Non-copyable objects can’t be copied, but manual “copies” can theoretically still be created by the creating contract. For instance, fungible tokens can't be copied, but transferred only.
+  - `drop` allows an object to be quietly destroyed. Simply allowing the object to go out of scope will destroy it.
+
+- A struct with `key` is just meant to act as template to create an object. And if it has `key` + `drop` ability, it can be destroyed as it goes out of scope block. There are so many combinations with different abilities put together. Let's see them one by one:
+
+  ```mermaid
+  flowchart LR
+  A[struct with `key`] --a template used to create an object--> B[object]
+  B --during transfer via `transfer` to transfer the object--> C[address/object]
+  ```
+
+  ```mermaid
+  flowchart LR
+  A[struct with `key` + `store`] --a template used to create an object--> B[object]
+  B --during transfer via `public_transfer` to transfer the object outside of its module in terms of storage--> C[address/object]
+  ```
+
+  ```mermaid
+  flowchart LR
+  A[struct with `key` + `drop`] --a template used to create an object & then destroyed when goes out of scope block--> B[object]
+  ```
+
+  ```mermaid
+  flowchart LR
+  A[struct with `copy` + `drop`] --a template used for event--> B[Event]
+  ```
+
+  ```mermaid
+  flowchart LR
+  A[struct with `store`] --can be child object of another--> B[object]
   ```
 
 - [Exclusively owned by another object](https://docs.sui.io/build/move/sui-move-library#owned-by-another-object). TODO:
   - [Reference](https://docs.sui.io/build/programming-with-objects/ch5-dynamic-fields)
-- Immutable using `transfer::freeze_object(obj);`
-- [Shared](https://docs.sui.io/build/move/sui-move-library#shared) using `transfer::share_object(obj);`.
+- Immutable using `transfer::freeze_object(obj: key);`, `transfer::public_freeze_object(obj: key+store);`.
+- [Shared](https://docs.sui.io/build/move/sui-move-library#shared) using `transfer::share_object(obj: key);`, `transfer::public_share_object(obj: key + store`.
 
 - **Aptos vs Sui**:
 
@@ -313,12 +434,14 @@ This object are stored in global storage & an address is assigned to.
 
 #### Global variables
 
-- `transfer::transfer(object, recipient)` is to transfer the ownership of an object to another address.
-- `transfer::public_transfer(object, recipient)` is to publicly share the ownership of an object with the recipient address. TODO: verify this.
+- [`transfer::transfer(object, recipient)`](https://github.com/MystenLabs/sui/blob/e7f5d3cdc187b5e4f45b1764f9c771be89d37921/crates/sui-framework/packages/sui-framework/sources/transfer.move#L17-L27) is to transfer the ownership of an object (with `key` ability only) to another address. Here, the object remains stored in the same module itself.
+- [`transfer::public_transfer(object, recipient)`](https://github.com/MystenLabs/sui/blob/e7f5d3cdc187b5e4f45b1764f9c771be89d37921/crates/sui-framework/packages/sui-framework/sources/transfer.move#L28-L36) is to transfer the ownership of an object (with `key` + `store` abilities) to another address. Here, the object is taken out of the existing module.
+
+For more, view this [`transfer.move`](https://github.com/MystenLabs/sui/blob/e7f5d3cdc187b5e4f45b1764f9c771be89d37921/crates/sui-framework/packages/sui-framework/sources/transfer.move) file.
 
 #### Function
 
-- visibility:
+- Visibility:
   - `private`: only functions within modules can use,
   - `public`: callable from other modules,
   - `public(friend)`: callable from modules explicitly declared as friends (in the module declaration). sort of like `internal` in solidity.
@@ -326,10 +449,10 @@ This object are stored in global storage & an address is assigned to.
 - A function's last line (of execution) without a semicolon is the return value; like in Rust.
 - Entry functions typically have an instance of `TxContext` as the last parameter. This is a special parameter set by the Sui Move VM, and does not need to be specified by the user calling the function.
 - Entry functions:
-  - `public entry`: callable from any module/account, like `external` in solidity, `extrinsic` in substrate.
+  - `public entry`: callable from any module/account in a transaction. This is similar to `external` in solidity, `extrinsic` (`#[call_index] #[weight]`) in substrate.
   - Denoted by the keyword `entry`
-  - have no return value
-  - (optional) have a mutable reference to an instance of the `TxContext` type in the last parameter
+  - returns nothing.
+  - (optional) have a mutable reference to an instance of the `TxContext` type as the last parameter.
 
 #### Event
 
@@ -390,7 +513,15 @@ const EMismatchedExchangeObject: u64 = 1;
   }
   ```
 
-- Here, coin balance type used in the code is like `Balance<T>`
+- `Coin` is wrapper around `Balance` type. `Balance` is a generic type that represents the balance of a particular coin type. The Balance type is defined in the `coin` module as follows:
+
+  ```move
+  struct Balance<phantom T> has store {
+      value: u64
+  }
+  ```
+
+- Here, coin balance struct (not object as it doesn't have a key) used in the code is like `Balance<T>`
 
   - T: the type of coin (SUI, MyCoin, etc.)
   - Balance<T>: the balance of the coin T
@@ -411,9 +542,26 @@ const EMismatchedExchangeObject: u64 = 1;
   id: 0x67e786d94eac270580eca1a5364b55efa59586ba6776e560bbae078ef82e5d8b
   ```
 
+  This is how we get the balance's value of an active address from CLI:
+  ![](img/sui-client-gas-balance-active-address.png)
+
+- Why `balance` is a separate module from `coin`?
+
+  - Because there are some low level APIs (basically underlying function) like `create_supply` for which we don't need the **witness** unlike the case where we do require **witness** doing the same using coin module.
+  - Another reason is to create a regulated coin like USDC where we can use our own logic on top of the `balance` module.
+  - Also, it doesn't have an id, hence it saves a little space when adding as a child object or inner struct of another struct. Like in a car example,
+
+  ```move
+  struct CarShop {
+    id: UID,
+    price: u64,
+    balance: Balance<SUI>
+  }
+  ```
+
 ### NFT (Non-Fungible Token)
 
-### SDKs
+## SDKs
 
 - [Sui Framework Documentaton](https://github.com/MystenLabs/sui/tree/main/crates/sui-framework/docs)
 - [Sui Typescript SDK (official)](https://github.com/MystenLabs/sui/tree/main/sdk/typescript)
@@ -461,14 +609,25 @@ Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-fram
 - [Sui Developer Portal](https://sui.io/developers)
   > The site displays the Mainnet version of the documentation by default.
   > The content changes based on the network you select from the dropdown.
-- [Developer cheatsheet](https://docs.sui.io/build/dev_cheat_sheet)
-- [Sui SC Examples](https://github.com/MystenLabs/sui/tree/main/sui_programmability/examples)
+- Developer cheatsheet from [website](https://docs.sui.io/build/dev_cheat_sheet), [Github](https://github.com/MystenLabs/sui/blob/main/doc/src/build/dev_cheat_sheet.md)
+- Sui SC Examples from [Github](https://github.com/MystenLabs/sui/tree/main/sui_programmability/examples)
 - [Write Smart Contracts with Sui Move](https://docs.sui.io/build/move)
 - [How Sui Differs from Other Blockchains](https://docs.sui.io/learn/sui-compared)
+- [How Sui Move differs from Core Move](https://docs.sui.io/learn/sui-move-diffs)
 - [SUI OBJECTS-SECURITY PRINCIPLES AND BEST PRACTICES](https://www.movebit.xyz/blog/post/Sui-Objects-Security-Principles-and-Best-Practices.html)
+- Programming with Objects on Sui from [website](https://docs.sui.io/devnet/build/programming-with-objects), [github](https://github.com/MystenLabs/sui/blob/main/doc/src/build/programming-with-objects)
+- Sui Github relevant folders:
+  - [doc/book/examples](https://github.com/MystenLabs/sui/blob/main/doc/book/examples)
+  - [doc/book/src](https://github.com/MystenLabs/sui/blob/main/doc/book/src)
+  - [doc/src/build](https://github.com/MystenLabs/sui/blob/main/doc/src/build)
+  - [sui_programmability/examples](https://github.com/MystenLabs/sui/blob/main/sui_programmability/examples)
+  - [sui-framework](https://github.com/MystenLabs/sui/blob/main/crates/sui-framework)
+  - [sui-rust-sdk](https://github.com/MystenLabs/sui/blob/main/crates/sui-sdk)
 
 ### Videos
 
 - [Official YT channel](https://www.youtube.com/@Sui-Network)
 - [Sui x KuCoin Summer Hackathon YT playlist](https://www.youtube.com/playlist?list=PL9t2y-BKvZBQxHNQRM85O23QCfMJ1y1hG)
   - [Introduction to Sui Network and Move](https://www.youtube.com/watch?v=cJwN3IhpLnQ&list=PL9t2y-BKvZBQxHNQRM85O23QCfMJ1y1hG&index=1) 🧑🏻‍💻
+- [Encode x Sui Educate YT playlist](https://www.youtube.com/playlist?list=PLfEHHr3qexv_aE7p6oDyVtD3WQsDsJngr)
+  - [Encode x Sui Educate: Making Your First Smart Contract Using Sui Move](https://www.youtube.com/watch?v=0wTpVQb09qs&list=PLfEHHr3qexv_aE7p6oDyVtD3WQsDsJngr&index=2&pp=iAQB) ✅

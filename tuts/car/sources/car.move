@@ -51,5 +51,4 @@ module car::car {
     public entry fun update_handling(car: &mut Car, by: u8) {
         car.handling = car.handling + by;
     }
-
 }

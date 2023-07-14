@@ -99,7 +99,6 @@ module car::car_shop {
         // transfer the earning to the owner
         transfer::public_transfer(earnings, tx_context::sender(ctx));
     }
-
 } 
 
 

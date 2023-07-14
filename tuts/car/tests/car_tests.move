@@ -1,3 +1,4 @@
+#[test_only]
 module car::car_tests {
     use sui::test_scenario::Self as ts;
     use car::car::{Self, Car};
