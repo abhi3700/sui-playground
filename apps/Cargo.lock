@@ -301,7 +301,10 @@ dependencies = [
 name = "app"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
+ "sui-json-rpc-types",
  "sui-sdk",
+ "tokio",
 ]
 
 [[package]]

@@ -6,4 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+anyhow = "1.0.71"
 sui-sdk = { git = "https://github.com/MystenLabs/sui", branch = "devnet" }
+tokio = "1.29.1"
+sui-json-rpc-types = { git = "https://github.com/MystenLabs/sui", branch = "devnet" }

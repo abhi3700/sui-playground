@@ -133,6 +133,8 @@ sui move test
 sui move test --ignore_compile_warnings
 ```
 
+[Details](./scaffoldings/tests.md)
+
 ### Coverage
 
 <!-- TODO: -->
@@ -623,6 +625,8 @@ Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-fram
   - [sui_programmability/examples](https://github.com/MystenLabs/sui/blob/main/sui_programmability/examples)
   - [sui-framework](https://github.com/MystenLabs/sui/blob/main/crates/sui-framework)
   - [sui-rust-sdk](https://github.com/MystenLabs/sui/blob/main/crates/sui-sdk)
+  - [sui-framework/build/sui-libs](https://github.com/MystenLabs/sui/tree/main/crates/sui-framework/docs)
+  - https://github.com/MystenLabs/sui/blob/main/crates/sui-framework/build/Sui/docs
 
 ### Videos
 

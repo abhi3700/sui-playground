@@ -37,18 +37,10 @@ module car::car {
         (car.speed, car.acceleration, car.handling)
     }
 
-    /// update the speed of a car in a body shop
-    public entry fun update_speed(car: &mut Car, by: u8) {
-        car.speed = car.speed + by;
-    }
-
-    /// update the acceleration of a car in a body shop
-    public entry fun update_acceleration(car: &mut Car, by: u8) {
-        car.acceleration = car.acceleration + by;
-    }
-
-    /// update the handling of a car in a body shop
-    public entry fun update_handling(car: &mut Car, by: u8) {
-        car.handling = car.handling + by;
+    /// update the stats of a car in a body shop
+    public entry fun update_stats(car: &mut Car, speed_by: u8, acceleration_by: u8, handling_by: u8) {
+        car.speed = car.speed + speed_by;
+        car.acceleration = car.acceleration + acceleration_by;
+        car.handling = car.handling + handling_by;
     }
 }
