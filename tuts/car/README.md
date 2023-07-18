@@ -21,5 +21,6 @@
 
 ## Resources
 
+- [Video](https://youtu.be/0wTpVQb09qs)
 - [Code](https://github.com/sui-foundation/encode-sui-educate/tree/main/lesson-2)
   > Doesn't have unit tests
