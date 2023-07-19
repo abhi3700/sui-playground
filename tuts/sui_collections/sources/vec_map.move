@@ -51,7 +51,7 @@ module sui_collections::vec_map {
 
     #[test]
     fun test_vec_map_u64_string_works() {
-        // create a VecMap
+        // create an empty VecMap
         let v1 = vec_map::empty<u64, String>();
 
         // insert
