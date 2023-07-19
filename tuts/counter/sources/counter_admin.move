@@ -16,9 +16,7 @@ module counter::counter_admin {
     // Error codes
     const EOnlyOwner: u64 = 1;
 
-    // for testing purpose only
-    #[test_only]
-    public fun create(ctx: &mut TxContext) {
+    fun init(ctx: &mut TxContext) {
         let counter = Counter {
             id: object::new(ctx),
             owner: tx_context::sender(ctx),
@@ -28,14 +26,10 @@ module counter::counter_admin {
         transfer::share_object(counter);
     }
 
-    fun init(ctx: &mut TxContext) {
-        let counter = Counter {
-            id: object::new(ctx),
-            owner: tx_context::sender(ctx),
-            value: 3
-        }; 
-
-        transfer::share_object(counter);
+    // for testing purpose only
+    #[test_only]
+    public fun test_init(ctx: &mut TxContext) {
+        init(ctx);
     }
 
     //==== Only owner ====
@@ -72,7 +66,7 @@ module counter::counter_admin {
     #[test]
     // test only `init` function here, rest are into `tests/` folder, as `init` function can't be defined public &
     // not accessed from outside of the module (including test module)
-    fun test_init() {
+    fun tests_init_works() {
         let scenario_val = ts::begin(@0x0);
         let scenario = &mut scenario_val;
 

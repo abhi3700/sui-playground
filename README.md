@@ -4,7 +4,7 @@
   <img src="img/sui_logo.png" alt="Sui logo" width="100" height="100">
 </p>
 
-Learn everything Sui Blockchain and the way Move language is used in it.
+Learn everything Sui Blockchain and the way Move language is used in it i.e. "**Sui Move**".
 
 > The same knowledge can be replicated for other Move based blockchains with little tweaking.
 
@@ -480,6 +480,10 @@ const EMismatchedSenderRecipient: u64 = 0;
 /// The `exchange_for` fields of the two escrowed objects do not match
 const EMismatchedExchangeObject: u64 = 1;
 ```
+
+#### [Sui Data types](./tuts/sui_data_types/)
+
+#### [Sui Collections](./tuts/sui_collections/)
 
 ### Coin (Fungible Token)
 

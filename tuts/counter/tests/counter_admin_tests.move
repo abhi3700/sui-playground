@@ -16,7 +16,7 @@ module counter::counter_admin_tests {
 
         {
             let ctx = ts::ctx(&mut scenario_val);
-            counter_admin::create(ctx);
+            counter_admin::test_init(ctx);
         };
 
         // check if the counter is incremented
@@ -39,7 +39,7 @@ module counter::counter_admin_tests {
 
         {
             let ctx = ts::ctx(&mut scenario_val);
-            counter_admin::create(ctx);
+            counter_admin::test_init(ctx);
         };
 
         // check if the counter is decremented
@@ -62,7 +62,7 @@ module counter::counter_admin_tests {
 
         {
             let ctx = ts::ctx(&mut scenario_val);
-            counter_admin::create(ctx);
+            counter_admin::test_init(ctx);
         };
 
         // check if the counter is reset

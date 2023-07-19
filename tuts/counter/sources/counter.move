@@ -12,16 +12,6 @@ module counter::counter {
         value: u16
     }
 
-    // for testing purpose only
-    #[test_only]
-    public fun create(ctx: &mut TxContext) {
-        let counter = Counter {
-            id: object::new(ctx),
-            value: 3
-        }; 
-
-        transfer::share_object(counter);
-    }
 
     #[allow(unused_function)]
     fun init(ctx: &mut TxContext) {
@@ -31,6 +21,12 @@ module counter::counter {
         }; 
 
         transfer::share_object(counter);
+    }
+
+    // for testing purpose only
+    #[test_only]
+    public fun test_init(ctx: &mut TxContext) {
+        init(ctx);
     }
 
     /// increment function
@@ -56,7 +52,7 @@ module counter::counter {
     #[test]
     // test only `init` function here, rest are into `tests/` folder, as `init` function can't be defined public &
     // not accessed from outside of the module (including test module)
-    fun test_init() {
+    fun test_init_works() {
         let scenario_val = ts::begin(@0x0);
         let scenario = &mut scenario_val;
 

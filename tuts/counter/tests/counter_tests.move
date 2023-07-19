@@ -17,7 +17,7 @@ module counter::counter_tests {
             // this can be tested inside the module only as its visibility is private, not public (not allowed for module initializer)
             // counter::init(ctx);
             // So, that's why we are using the create function to emulate contract initializer.
-            counter::create(ctx);
+            counter::test_init(ctx);
         };
 
         // check if the object created is shared with Alice
