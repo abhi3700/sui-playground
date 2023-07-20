@@ -1,5 +1,3 @@
-// Copyright (c) @abhi3700
-// SPDX-License-Identifier: MIT
 
 /// MyCoin coin with a trusted owner responsible for minting/burning (e.g., a stablecoin)
 module my_coin::my_coin {
@@ -9,27 +7,34 @@ module my_coin::my_coin {
     use sui::tx_context::{Self, TxContext};
 
     /// Name of the coin
-    struct MYCOIN has drop {}
+    struct MY_COIN has drop {}
 
     /// Register the trusted currency to acquire its `TreasuryCap`. Because
     /// this is a module initializer, it ensures the currency only gets
     /// registered once.
-    fun init(ctx: &mut TxContext) {
+    fun init(witness: MY_COIN, ctx: &mut TxContext) {
         // Get a treasury cap for the coin and give it to the transaction
         // sender
-        let (treasury_cap, metadata) = coin::create_currency<MYCOIN>(MYCOIN{}, 2, b"MYCOIN", b"", b"", option::none(), ctx);
+        let (treasury_cap, metadata) = coin::create_currency<MY_COIN>(witness, 2, b"MY_COIN", b"My Coin", b"A Social Currency", option::none(), ctx);
         transfer::public_freeze_object(metadata);
         transfer::public_transfer(treasury_cap, tx_context::sender(ctx))
     }
 
-    public entry fun mint(treasury_cap: &mut TreasuryCap<MYCOIN>, amount: u64, ctx: &mut TxContext) {
-        let coin = coin::mint<MYCOIN>(treasury_cap, amount, ctx);
+    public entry fun mint(treasury_cap: &mut TreasuryCap<MY_COIN>, amount: u64, ctx: &mut TxContext) {
+        let coin = coin::mint<MY_COIN>(treasury_cap, amount, ctx);
         transfer::public_transfer(coin, tx_context::sender(ctx));
     }
 
     #[test_only]
     /// Wrapper of module initializer for testing
     public fun test_init(ctx: &mut TxContext) {
-        init(ctx)
+        init(MY_COIN{}, ctx);
     }
+
+    #[test]
+    fun test_init_works() {
+        let ctx = &mut tx_context::dummy();
+        init(MY_COIN{}, ctx);
+    }
+    
 }
