@@ -8,10 +8,34 @@ module sui_utils::pay {
     use sui::test_scenario::Self as ts;
     use std::vector;
 
-    const TEST_SENDER_ADDR: address = @0xA11CE;
+    const TEST_SENDER_ADDR: address = @0x01;
     const ALICE: address = @0xA11CE;
     const BOB: address = @0xB0B;
     const CHARLIE: address = @0xC8C2;
+
+    #[test]
+    fun test_split() {
+        let scenario_val = ts::begin(ALICE);
+        let scenario = &mut scenario_val;
+        let ctx = ts::ctx(scenario);
+        let coin = coin::mint_for_testing<SUI>(10, ctx);
+
+        ts::next_tx(scenario, ALICE);
+        pay::split(&mut coin, 3, ts::ctx(scenario));
+
+        ts::next_tx(scenario, ALICE);
+        let coin1 = ts::take_from_sender<Coin<SUI>>(scenario);
+        
+        assert!(coin::value(&coin1) == 3, 0);
+        assert!(coin::value(&coin) == 7, 0);
+        // Hence, total value is 10.
+
+        // Now, destroy all the objects
+        test_utils::destroy(coin);
+        test_utils::destroy(coin1);
+        
+        ts::end(scenario_val);
+    }
 
     #[test]
     fun test_coin_split_by_n() {

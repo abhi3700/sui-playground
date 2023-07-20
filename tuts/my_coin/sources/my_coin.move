@@ -6,7 +6,7 @@ module my_coin::my_coin {
     use sui::transfer;
     use sui::tx_context::{Self, TxContext};
 
-    /// Name of the coin
+    /// Name of the witness should match with the name of the module
     struct MY_COIN has drop {}
 
     /// Register the trusted currency to acquire its `TreasuryCap`. Because
