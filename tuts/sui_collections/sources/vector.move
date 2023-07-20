@@ -5,9 +5,13 @@ module sui_collections::vector {
 
     #[test]
     fun test_vector_u256_works() {
-        // create
+        // create empty vector
         let v1: vector<u256> = vector::empty();
         assert!(vector::length(&v1) == 0, 0);
+
+        // create vector with elements
+        let v2 = vector[1, 2, 3];
+        debug::print(&v2);
 
         // push_back
         vector::push_back(&mut v1, 145u256);

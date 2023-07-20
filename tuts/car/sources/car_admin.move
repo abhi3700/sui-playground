@@ -30,11 +30,8 @@ module car::car_admin {
 
     #[test_only]
     /// replacement for `init` function, as it can only be private.
-    public fun create_admin_cap(ctx: &mut TxContext) {
-        // during the conntract deployment, the admin is transferred with the AdminCapability object.
-        transfer::transfer(AdminCapability {
-            id: object::new(ctx) 
-        }, tx_context::sender(ctx));
+    public fun test_init(ctx: &mut TxContext) {
+        init(ctx);
     }
     
     #[test_only]

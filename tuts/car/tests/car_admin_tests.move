@@ -15,7 +15,7 @@ module car::car_admin_tests {
 
         {
             let ctx = ts::ctx(&mut scenario_val);
-            car_admin::create_admin_cap(ctx);   // Admin capability is given to Owner
+            car_admin::test_init(ctx);   // Admin capability is given to Owner
         };
 
         ts::next_tx(&mut scenario_val, Alice);

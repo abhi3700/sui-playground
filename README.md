@@ -491,13 +491,21 @@ const EMismatchedExchangeObject: u64 = 1;
 - Lowest unit: MIST
 - Highest unit: SUI
 - Decimal places or precision: 9 i.e. `1 SUI = 1e9 MIST`
-- SUI is a fungible token object of every account/address whenever created.
-- type: `0x2::coin::Coin<0x2::sui::SUI>` i.e. `Coin<T>`
-  - 0x2 is the package address of the `coin` module with generic struct `Coin<T>`.
+- SUI is a Sui blockchain's native fungible token object of every account/address whenever created.
+- Code: `sui::sui`, where `sui` package is deployed into `0x2` (like precompiled address).
+- Now, `sui::sui::SUI` is the struct name of the coin object. It's basically name of the Sui blockchain's native coin that also acts as witness.
+
+  ```rust
+  /// Name of the coin
+  struct SUI has drop {}
+  ```
+
+- Generic Coin SC: `0x2::coin::Coin<0x2::sui::SUI>` i.e. `Coin<T>`
+  - 0x2 is the package (named `sui`) address where `coin` is one of the modules with generic struct `Coin<T>`.
   - Why generic? Because it can represent different types of coin.
 - Code snippet:
 
-  ```move
+  ```rust
   struct Coin<phantom T> has key, store {
       id: UID,
       value: u64

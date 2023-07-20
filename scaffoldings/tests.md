@@ -227,6 +227,8 @@ ts::next_txn(scenario, Alice);
 ts::end(scenario_val);
 ```
 
+> NOTE: This is the workaround for the above problem. But, the above problem is not a problem. Rather it can also work in some cases.
+
 Pass ✅: Because `scenario` is replaced by mutable referencing like this:
 
 ```rust

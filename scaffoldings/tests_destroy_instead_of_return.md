@@ -2,6 +2,8 @@
 title: Destroy objects instead of returning them
 ---
 
+Using `sui::test_utils::destroy()` function.
+
 Before ending a test function, we are supposed to destroy all the objects created/taken from the sender in a transaction in the test function.
 
 In the below example, as the objects are not created in the current transaction. It was supposed to be returned in the corresponding transactions itself, before the next transaction is called.
@@ -52,6 +54,5 @@ fun test_coin_split_n() {
     // ts::return_to_sender(&scenario_val, coin2);
 
     ts::end(scenario_val);
-
 }
 ```
